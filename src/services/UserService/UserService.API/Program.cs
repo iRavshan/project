@@ -1,15 +1,25 @@
+using Microsoft.EntityFrameworkCore;
+using UserService.Application.Contexts;
+using UserService.Application.Interfaces;
+using UserService.Application.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
+builder.Services.AddDbContext<AppDbContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DatabaseConnection")));
+
+builder.Services.AddScoped<IClassroomRepository, ClassroomRepository>();
+builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if(app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
