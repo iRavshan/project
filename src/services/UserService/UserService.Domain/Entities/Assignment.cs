@@ -13,7 +13,7 @@ namespace UserService.Domain.Entities
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public Teacher Teacher { get; set; }
+        public User AssignedBy { get; set; }
         public Classroom Classroom { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime CreatedAt { get; set; }

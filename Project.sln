@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.Applica
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.Infrastructure", "src\services\NotificationService\NotificationService.Infrastructure\NotificationService.Infrastructure.csproj", "{CA6B3A74-EB8C-FB04-9003-62E3FE95A1A5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra", "Infra", "{CCECFDEA-4466-4D44-9252-2090939BF475}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,7 @@ Global
 		{589672CA-EA39-582D-839C-2EE6F4337A32} = {43C7EF8E-E06D-4A89-A024-C2102CC18922}
 		{8CA7AEF8-E845-E698-60A2-8A0F862C4EE4} = {43C7EF8E-E06D-4A89-A024-C2102CC18922}
 		{CA6B3A74-EB8C-FB04-9003-62E3FE95A1A5} = {43C7EF8E-E06D-4A89-A024-C2102CC18922}
+		{CCECFDEA-4466-4D44-9252-2090939BF475} = {A72EFB68-3002-43E6-8428-EA64CD09018C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E4DA21F-589F-47F7-9B63-063DBC4D3310}
