@@ -1,19 +1,14 @@
-<<<<<<< HEAD
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UserService.Infrastructure.Interfaces;
-
-namespace UserService.Infrastructure.Services
-{
-    public class UserService: IUserService
-    {
-=======
 using UserService.Application.Interfaces;
 using UserService.Application.Interfaces.Auth;
 using UserService.Domain.Entities;
+using UserService.Application.Interfaces;
+using IUserService = UserService.Application.Interfaces.IUserService;
 
 namespace UserService.Infrastructure.Services;
 
@@ -24,7 +19,7 @@ public class UserService : IUserService
     private readonly IJwtProvider _jwtProvider;
 
     public UserService(
-        IPasswordHasher passwordHasher, 
+        IPasswordHasher passwordHasher,
         IUserRepository userRepository,
         IJwtProvider jwtProvider)
     {
@@ -32,14 +27,14 @@ public class UserService : IUserService
         _userRepository = userRepository;
         _jwtProvider = jwtProvider;
     }
-    
+
     public async Task Register(
         string username,
         string email,
         string password)
     {
         var hashedPassword = _passwordHasher.Generate(password);
-        User user = new (Guid.NewGuid(), Role.Student,  username, email, hashedPassword);
+        User user = new(Guid.NewGuid(), Role.Student, username, email, hashedPassword);
         await _userRepository.Add(user);
     }
 
@@ -50,6 +45,5 @@ public class UserService : IUserService
         if (!result) throw new Exception("Invalid password or username");
 
         return _jwtProvider.GenerateToken(user);
->>>>>>> dev
     }
 }
