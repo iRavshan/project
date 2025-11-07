@@ -9,15 +9,18 @@ namespace UserService.Domain.Entities
 {
     public class User
     {
-        [Key]
-        public Guid Id { get; set; }
-        public Role Role { get; set; }
-        public string Username { get; set; }
-        public string PasswordHash { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public string? Email { get; set; }
+        public string Username { get; set; }
         public string? Phone { get; set; }
+        public required string Email { get; set; }
+        public required string PasswordHash { get; set; }
+        public string? ProfilePictureUrl { get; set; }
+        public DateTime DateJoined { get; set; } = DateTime.UtcNow;
+        public bool IsActive { get; set; } = true;
+        public Role Role { get; set; }
+        
 
         public User(
             Guid id,
@@ -53,5 +56,10 @@ namespace UserService.Domain.Entities
             Email = email;
             PasswordHash = passwordHash;
         }
+
+        public ICollection<Classroom> OwnedClassrooms { get; set; } = [];
+        public ICollection<ClassroomUser> JoinedClassrooms { get; set; } = [];
+        public ICollection<Assignment> CreatedAssignments { get; set; } = [];
+        public ICollection<Submission> Submissions { get; set; } = [];
     }
 }

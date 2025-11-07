@@ -4,10 +4,14 @@ using UserService.Application.Contexts;
 using UserService.Application.Interfaces;
 using UserService.Application.Interfaces.Auth;
 using UserService.Application.Repositories;
+<<<<<<< HEAD
+using UserService.Infrastructure.Interfaces;
+using UserService.Infrastructure.Services;
+=======
 using UserService.Infrastructure.Middlewares;
+>>>>>>> dev
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -26,6 +30,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IUserService, UserService.Infrastructure.Services.UserService>();
+
+builder.Services.AddScoped<IClassroomService, ClassroomService>();
+builder.Services.AddScoped<IAssignmentService, AssignmentService>();
 
 var app = builder.Build();
 

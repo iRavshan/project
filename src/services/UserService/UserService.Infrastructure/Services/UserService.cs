@@ -1,3 +1,16 @@
+<<<<<<< HEAD
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using UserService.Infrastructure.Interfaces;
+
+namespace UserService.Infrastructure.Services
+{
+    public class UserService: IUserService
+    {
+=======
 using UserService.Application.Interfaces;
 using UserService.Application.Interfaces.Auth;
 using UserService.Domain.Entities;
@@ -37,5 +50,6 @@ public class UserService : IUserService
         if (!result) throw new Exception("Invalid password or username");
 
         return _jwtProvider.GenerateToken(user);
+>>>>>>> dev
     }
 }
