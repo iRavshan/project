@@ -7,18 +7,16 @@ using UserService.Infrastructure.Interfaces;
 using UserService.Application.Interfaces;
 using UserService.Application.Interfaces.Auth;
 using UserService.Domain.Entities;
-using UserService.Application.Interfaces;
-using IUserService = UserService.Application.Interfaces.IUserService;
 
 namespace UserService.Infrastructure.Services;
 
-public class UserService : IUserService
+public class UzerService : IUserService
 {
     private readonly IPasswordHasher _passwordHasher;
     private readonly IUserRepository _userRepository;
     private readonly IJwtProvider _jwtProvider;
 
-    public UserService(
+    public UzerService(
         IPasswordHasher passwordHasher,
         IUserRepository userRepository,
         IJwtProvider jwtProvider)
@@ -33,6 +31,12 @@ public class UserService : IUserService
         string email,
         string password)
     {
+        var existingUser = await _userRepository.GetByUsername(username);
+        if (existingUser != null) throw new Exception("Username already exists");
+        
+        var existingEmail = await _userRepository.GetByUsername(email);
+        if (existingEmail != null) throw new Exception("Email already exists");
+        
         var hashedPassword = _passwordHasher.Generate(password);
         User user = new(Guid.NewGuid(), Role.Student, username, email, hashedPassword);
         await _userRepository.Add(user);
