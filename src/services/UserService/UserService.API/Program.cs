@@ -7,8 +7,6 @@ using UserService.Application.Repositories;
 using UserService.Infrastructure.Interfaces;
 using UserService.Infrastructure.Services;
 using UserService.Infrastructure.Middlewares;
-using UserService.Application.Interfaces;
-using IUserService = UserService.Application.Interfaces.IUserService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +26,7 @@ builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
-builder.Services.AddScoped<IUserService, UserService.Infrastructure.Services.UserService>();
+builder.Services.AddScoped<IUserService, UzerService>();
 
 builder.Services.AddScoped<IClassroomService, ClassroomService>();
 builder.Services.AddScoped<IAssignmentService, AssignmentService>();
