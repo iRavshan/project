@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 using UserService.Domain.Entities;
 
 namespace UserService.Application.Contexts
