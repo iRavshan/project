@@ -14,8 +14,8 @@ namespace UserService.Domain.Entities
         public string? LastName { get; set; }
         public string Username { get; set; }
         public string? Phone { get; set; }
-        public required string Email { get; set; }
-        public required string PasswordHash { get; set; }
+        public string Email { get; set; }
+        public string PasswordHash { get; set; }
         public string? ProfilePictureUrl { get; set; }
         public DateTime DateJoined { get; set; } = DateTime.UtcNow;
         public bool IsActive { get; set; } = true;

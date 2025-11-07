@@ -4,12 +4,11 @@ using UserService.Application.Contexts;
 using UserService.Application.Interfaces;
 using UserService.Application.Interfaces.Auth;
 using UserService.Application.Repositories;
-<<<<<<< HEAD
 using UserService.Infrastructure.Interfaces;
 using UserService.Infrastructure.Services;
-=======
 using UserService.Infrastructure.Middlewares;
->>>>>>> dev
+using UserService.Application.Interfaces;
+using IUserService = UserService.Application.Interfaces.IUserService;
 
 var builder = WebApplication.CreateBuilder(args);
 
