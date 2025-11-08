@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using UserService.Infrastructure.Interfaces;
 using UserService.Application.Interfaces;
 using UserService.Application.Interfaces.Auth;
 using UserService.Domain.Entities;
+using UserService.Infrastructure.Exceptions;
 
 namespace UserService.Infrastructure.Services;
 
@@ -32,10 +34,10 @@ public class UzerService : IUserService
         string password)
     {
         var existingUser = await _userRepository.GetByUsername(username);
-        if (existingUser != null) throw new Exception("Username already exists");
+        if (existingUser != null) throw new UsernameAlreadyExistsException(username);
         
-        var existingEmail = await _userRepository.GetByUsername(email);
-        if (existingEmail != null) throw new Exception("Email already exists");
+        var existingEmail = await _userRepository.GetByEmail(email);
+        if (existingEmail != null) throw new EmailAlreadyExistsException(email);
         
         var hashedPassword = _passwordHasher.Generate(password);
         User user = new(Guid.NewGuid(), Role.Student, username, email, hashedPassword);
@@ -45,8 +47,9 @@ public class UzerService : IUserService
     public async Task<string> Login(string username, string password)
     {
         var user = await _userRepository.GetByUsername(username);
-        var result = _passwordHasher.Verify(password, user.PasswordHash);
-        if (!result) throw new Exception("Invalid password or username");
+
+        if (user == null || !_passwordHasher.Verify(password, user.PasswordHash))
+            throw new InvalidCredentialsGivenException();
 
         return _jwtProvider.GenerateToken(user);
     }
