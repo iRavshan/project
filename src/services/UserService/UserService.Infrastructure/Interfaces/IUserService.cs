@@ -8,7 +8,8 @@ namespace UserService.Infrastructure.Interfaces
 {
     public interface IUserService
     {
-        Task Register(string username, string email, string password);
         Task<string> Login(string username, string password);
+        Task Register(string dtoUserName, string dtoEmail, string dtoPassword, 
+            string? dtoFirstName = null, string? dtoLastName = null, string? dtoPhone = null, string role = "Student");
     }
 }

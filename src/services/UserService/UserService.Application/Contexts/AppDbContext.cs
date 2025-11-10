@@ -1,15 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using UserService.Domain.Entities;
 
 namespace UserService.Application.Contexts
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
-        public DbSet<User> Users => Set<User>();
         public DbSet<Classroom> Classrooms => Set<Classroom>();
         public DbSet<ClassroomUser> ClassroomUsers => Set<ClassroomUser>();
         public DbSet<Assignment> Assignments => Set<Assignment>();
         public DbSet<Submission> Submissions => Set<Submission>();
+        public DbSet<Organization> Organizations => Set<Organization>();
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }
@@ -49,7 +51,7 @@ namespace UserService.Application.Contexts
             modelBuilder.Entity<Assignment>()
                 .HasOne(a => a.Classroom)
                 .WithMany(c => c.Assignments)
-                .HasForeignKey(a => a.Id)
+                .HasForeignKey(a => a.ClassroomId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Assignment>()
@@ -72,12 +74,10 @@ namespace UserService.Application.Contexts
                 .OnDelete(DeleteBehavior.Restrict);
             
             modelBuilder.Entity<User>()
-                .HasIndex(u => u.Username)
-                .IsUnique();
-            
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
+                .HasOne(u => u.Organization)         
+                .WithMany(o => o.Admins)
+                .HasForeignKey(u => u.OrganizationId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
