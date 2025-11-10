@@ -8,26 +8,36 @@ using UserService.Domain.Entities;
 
 namespace UserService.Infrastructure.Middlewares;
 
-public class JwtProvider : IJwtProvider
+public class JwtProvider(IOptions<JwtOptions> options) : IJwtProvider
 {
-    private readonly JwtOptions _options;
+    private readonly JwtOptions _options = options.Value;
 
-    public JwtProvider(IOptions<JwtOptions> options)
+    public string GenerateToken(User user, IList<string> roles)
     {
-        _options = options.Value;
-    }
-    
-    public string GenerateToken(User user)
-    {
-        Claim[] claims = [new ("userId", user.Id.ToString()), new ("username", user.Username)];
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
+        };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
             SecurityAlgorithms.HmacSha256);
+
         var token = new JwtSecurityToken(
-            claims: claims,
-            signingCredentials: signingCredentials,
-            expires: DateTime.UtcNow.AddHours(_options.ExpireHours)
-        );
+            _options.Issuer,
+            _options.Audience,
+            claims,
+            null,
+            DateTime.UtcNow.AddHours(_options.ExpireHours),
+            signingCredentials);
+
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

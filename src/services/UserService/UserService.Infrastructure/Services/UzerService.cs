@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using UserService.Infrastructure.Interfaces;
 using UserService.Application.Interfaces;
 using UserService.Application.Interfaces.Auth;
@@ -12,45 +13,63 @@ using UserService.Infrastructure.Exceptions;
 
 namespace UserService.Infrastructure.Services;
 
-public class UzerService : IUserService
+public class UzerService(
+    UserManager<User> userManager,
+    IJwtProvider jwtProvider,
+    RoleManager<IdentityRole<Guid>>  roleManager)
+    : IUserService
 {
-    private readonly IPasswordHasher _passwordHasher;
-    private readonly IUserRepository _userRepository;
-    private readonly IJwtProvider _jwtProvider;
-
-    public UzerService(
-        IPasswordHasher passwordHasher,
-        IUserRepository userRepository,
-        IJwtProvider jwtProvider)
-    {
-        _passwordHasher = passwordHasher;
-        _userRepository = userRepository;
-        _jwtProvider = jwtProvider;
-    }
-
     public async Task Register(
         string username,
         string email,
-        string password)
+        string password,
+        string? firstName = null,
+        string? lastName = null,
+        string? phone = null,
+        string role = "Student")
     {
-        var existingUser = await _userRepository.GetByUsername(username);
+        var existingUser = await userManager.FindByNameAsync(username);
         if (existingUser != null) throw new UsernameAlreadyExistsException(username);
         
-        var existingEmail = await _userRepository.GetByEmail(email);
+        var existingEmail = await userManager.FindByEmailAsync(email);
         if (existingEmail != null) throw new EmailAlreadyExistsException(email);
         
-        var hashedPassword = _passwordHasher.Generate(password);
-        User user = new(Guid.NewGuid(), Role.Student, username, email, hashedPassword);
-        await _userRepository.Add(user);
+        var user = new User()
+        { 
+            UserName = username,
+            Email = email,
+            FirstName = firstName,
+            LastName = lastName,
+            PhoneNumber = phone,
+            DateJoined = DateTime.UtcNow
+        };
+        
+        var result = await userManager.CreateAsync(user, password);
+
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new Exception($"User registration failed: {errors}");
+        }
+        
+        var roleResult = await userManager.AddToRoleAsync(user, role);
+        if (!roleResult.Succeeded)
+        {
+            await userManager.DeleteAsync(user);
+            var errors = string.Join(", ", roleResult.Errors.Select(e => e.Description));
+            throw new Exception($"Role assignment failed: {errors}");
+        }
     }
 
     public async Task<string> Login(string username, string password)
     {
-        var user = await _userRepository.GetByUsername(username);
+        var user = await userManager.FindByNameAsync(username);
 
-        if (user == null || !_passwordHasher.Verify(password, user.PasswordHash))
+        if (user == null || !await userManager.CheckPasswordAsync(user, password))
             throw new InvalidCredentialsGivenException();
 
-        return _jwtProvider.GenerateToken(user);
+        var roles = await userManager.GetRolesAsync(user);
+        
+        return jwtProvider.GenerateToken(user, roles);
     }
 }

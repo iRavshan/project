@@ -7,26 +7,19 @@ namespace UserService.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController(IUserService userService) : ControllerBase
     {
-        private readonly IUserService _userService;
-
-        public AuthController(IUserService userService)
-        {
-            _userService = userService;
-        }
-        
         [HttpPost("register")]
         public async Task<IResult> Register(RegisterUserDto dto)
         {
-            await _userService.Register(dto.userName, dto.email, dto.password);
+            await userService.Register(dto.UserName, dto.Email, dto.Password, dto.FirstName, dto.LastName,  dto.Phone);
             return Results.Ok();
         }
 
         [HttpPost("login")]
         public async Task<IResult> Login(LoginUserDto dto)
         {
-            var token = await _userService.Login(dto.userName, dto.password);
+            var token = await userService.Login(dto.UserName, dto.Password);
             return Results.Ok(token);
         }
     }

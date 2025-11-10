@@ -4,5 +4,5 @@ namespace UserService.Application.Interfaces.Auth;
 
 public interface IJwtProvider
 {
-    string GenerateToken(User user);
+    string GenerateToken(User user, IList<string> roles);
 }
